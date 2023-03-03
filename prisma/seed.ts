@@ -33,8 +33,8 @@ async function main() {
     })
     await prisma.ticketType.create({
       data: {
-        name: "Online",
-        price: 100,
+        name: "Presencial",
+        price: 250,
         isRemote: false,
         includesHotel: false,
         updatedAt: dayjs().toDate(),
