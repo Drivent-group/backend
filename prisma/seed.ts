@@ -20,7 +20,7 @@ async function main() {
 
   console.log({ event });
 
-  if (tickets.length < 2) {
+  if (tickets.length < 3) {
     await prisma.ticketType.deleteMany({})
     await prisma.ticketType.create({
       data: {
@@ -28,6 +28,15 @@ async function main() {
         price: 250,
         isRemote: false,
         includesHotel: true,
+        updatedAt: dayjs().toDate(),
+      },
+    })
+    await prisma.ticketType.create({
+      data: {
+        name: "Presencial",
+        price: 250,
+        isRemote: false,
+        includesHotel: false,
         updatedAt: dayjs().toDate(),
       },
     })
