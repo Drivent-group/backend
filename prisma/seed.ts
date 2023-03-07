@@ -5,8 +5,50 @@ const prisma = new PrismaClient();
 async function main() {
   let event = await prisma.event.findFirst();
   let tickets = await prisma.ticketType.findMany();
+  let hotels = await prisma.hotel.findMany()
 
-  if (!event) {
+  if(hotels.length < 2) {
+    await prisma.hotel.deleteMany({})
+    await prisma.hotel.create({
+      data: {
+        name: 'bahamas', 
+        image: 'https://img.freepik.com/vetores-gratis/fundo-de-fachada-plana-hotel_23-2148157379.jpg?w=2000',
+      }})
+    await prisma.hotel.create({
+      data: {
+        name: 'caribe', 
+        image: 'https://www.momondo.com.br/himg/07/5d/30/expediav2-44173-1848004226-710507.jpg',
+      }
+    })
+  }
+  await prisma.room.deleteMany({})
+  await prisma.room.create({
+    data: {
+      name: 'a', 
+      capacity: 2, 
+      hotelId: 1
+    }
+  })
+  await prisma.room.create({
+    data: {
+      name: 'b', 
+      capacity: 2, 
+      hotelId: 1
+    }
+  })
+
+  await prisma.room.create({
+    data: {
+      name: 'c', 
+      capacity: 1, 
+      hotelId: 2
+    }
+  })
+
+}
+
+
+/*   if (!event) {
     event = await prisma.event.create({
       data: {
         title: "Driven.t",
@@ -52,7 +94,7 @@ async function main() {
     tickets = await prisma.ticketType.findMany();
   }
   console.log({ tickets });
-}
+} */
 
 main()
   .catch((e) => {
