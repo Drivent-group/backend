@@ -7,43 +7,73 @@ async function main() {
   let tickets = await prisma.ticketType.findMany();
   let hotels = await prisma.hotel.findMany()
 
-  if(hotels.length < 2) {
+ if(hotels.length < 2) {
+    await prisma.room.deleteMany({})
     await prisma.hotel.deleteMany({})
+
     await prisma.hotel.create({
       data: {
         name: 'bahamas', 
         image: 'https://img.freepik.com/vetores-gratis/fundo-de-fachada-plana-hotel_23-2148157379.jpg?w=2000',
-      }})
+      }
+    })
+
     await prisma.hotel.create({
       data: {
         name: 'caribe', 
         image: 'https://www.momondo.com.br/himg/07/5d/30/expediav2-44173-1848004226-710507.jpg',
       }
     })
-  }
-  await prisma.room.deleteMany({})
-  await prisma.room.create({
-    data: {
-      name: 'a', 
-      capacity: 2, 
-      hotelId: 1
-    }
-  })
-  await prisma.room.create({
-    data: {
-      name: 'b', 
-      capacity: 2, 
-      hotelId: 1
-    }
-  })
 
-  await prisma.room.create({
-    data: {
-      name: 'c', 
-      capacity: 1, 
-      hotelId: 2
+    hotels = await prisma.hotel.findMany()
+  }
+
+  console.log({ hotels });
+
+  for(let i = 0; i < hotels.length; i++){
+    const rooms = await prisma.room.findMany({
+      where:{
+        hotelId: hotels[i].id,
+      }
+    })
+
+    if(rooms.length < 3) {
+      await prisma.room.deleteMany({
+        where:{
+          hotelId: hotels[i].id,
+        }
+      })
+
+      await prisma.room.create({
+        data: {
+          name: 'Single', 
+          capacity: 1, 
+          hotelId: hotels[i].id,
+        }
+      })
+
+      await prisma.room.create({
+        data: {
+          name: 'Double', 
+          capacity: 2, 
+          hotelId: hotels[i].id,
+        }
+      })
+    
+      await prisma.room.create({
+        data: {
+          name: 'Triple', 
+          capacity: 3, 
+          hotelId: hotels[i].id,
+        }
+      })
+
     }
-  })
+  }
+
+ const rooms = await prisma.room.findMany();
+
+  console.log({ rooms });
 
     if (!event) {
     event = await prisma.event.create({
@@ -61,15 +91,7 @@ async function main() {
 
   if (tickets.length < 3) {
     await prisma.ticketType.deleteMany({})
-    await prisma.ticketType.create({
-      data: {
-        name: "Presencial",
-        price: 250,
-        isRemote: false,
-        includesHotel: true,
-        updatedAt: dayjs().toDate(),
-      },
-    })
+
     await prisma.ticketType.create({
       data: {
         name: "Presencial",
@@ -79,6 +101,7 @@ async function main() {
         updatedAt: dayjs().toDate(),
       },
     })
+
     await prisma.ticketType.create({
       data: {
         name: "Online",
@@ -88,14 +111,22 @@ async function main() {
         updatedAt: dayjs().toDate(),
       },
     })
+
+    await prisma.ticketType.create({
+      data: {
+        name: "Presencial",
+        price: 600,
+        isRemote: false,
+        includesHotel: true,
+        updatedAt: dayjs().toDate(),
+      },
+    })
+
     tickets = await prisma.ticketType.findMany();
   }
+
   console.log({ tickets });
 } 
-
-
-
- 
 
 main()
   .catch((e) => {
