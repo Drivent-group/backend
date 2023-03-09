@@ -1,22 +1,22 @@
-import "reflect-metadata";
-import "express-async-errors";
-import express, { Express } from "express";
 import cors from "cors";
+import express, { Express } from "express";
+import "express-async-errors";
+import "reflect-metadata";
 
-import { loadEnv, connectDb, disconnectDB } from "@/config";
+import { connectDb, connectRedis, disconnectDB, disconnectRedis, loadEnv } from "@/config";
 
 loadEnv();
 
 import { handleApplicationErrors } from "@/middlewares";
 import {
-  usersRouter,
   authenticationRouter,
-  eventsRouter,
+  bookingRouter,
   enrollmentsRouter,
-  ticketsRouter,
-  paymentsRouter,
+  eventsRouter,
   hotelsRouter,
-  bookingRouter
+  paymentsRouter,
+  ticketsRouter,
+  usersRouter,
 } from "@/routers";
 
 const app = express();
@@ -34,13 +34,15 @@ app
   .use("/booking", bookingRouter)
   .use(handleApplicationErrors);
 
-export function init(): Promise<Express> {
+export async function init(): Promise<Express> {
   connectDb();
+  await connectRedis();
   return Promise.resolve(app);
 }
 
 export async function close(): Promise<void> {
   await disconnectDB();
+  await disconnectRedis();
 }
 
 export default app;
