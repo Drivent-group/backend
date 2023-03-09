@@ -26,14 +26,14 @@ async function main() {
     data: {
       name: 'a', 
       capacity: 2, 
-      hotelId: 1
+      hotelId: 2
     }
   })
   await prisma.room.create({
     data: {
       name: 'b', 
       capacity: 2, 
-      hotelId: 1
+      hotelId: 2
     }
   })
 
@@ -41,7 +41,7 @@ async function main() {
     data: {
       name: 'c', 
       capacity: 1, 
-      hotelId: 2
+      hotelId: 3
     }
   })
 
