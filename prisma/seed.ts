@@ -45,10 +45,7 @@ async function main() {
     }
   })
 
-}
-
-
-/*   if (!event) {
+    if (!event) {
     event = await prisma.event.create({
       data: {
         title: "Driven.t",
@@ -94,7 +91,11 @@ async function main() {
     tickets = await prisma.ticketType.findMany();
   }
   console.log({ tickets });
-} */
+} 
+
+
+
+ 
 
 main()
   .catch((e) => {
