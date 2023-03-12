@@ -18,7 +18,8 @@ async function findByRoomId(roomId: number) {
     where: {
       roomId,
     },
-    include: {
+    select: {
+      id: true,
       Room: true,
     }
   });
