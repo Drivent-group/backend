@@ -100,7 +100,7 @@ async function main() {
 
       await prisma.room.create({
         data: {
-          name: 'Single', 
+          name: '101', 
           capacity: 1, 
           hotelId: hotels[i].id,
         }
@@ -108,7 +108,7 @@ async function main() {
 
       await prisma.room.create({
         data: {
-          name: 'Doble', 
+          name: '102', 
           capacity: 2, 
           hotelId: hotels[i].id,
         }
@@ -116,7 +116,7 @@ async function main() {
     
       await prisma.room.create({
         data: {
-          name: 'Triple', 
+          name: '103', 
           capacity: 3, 
           hotelId: hotels[i].id,
         }
