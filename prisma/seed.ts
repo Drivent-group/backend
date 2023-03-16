@@ -126,7 +126,75 @@ async function main() {
   }
 
   console.log({ tickets });
-} 
+
+  if(hotels.length < 2) {
+    await prisma.room.deleteMany({})
+    await prisma.hotel.deleteMany({})
+
+    await prisma.hotel.create({
+      data: {
+        name: 'bahamas', 
+        image: 'https://img.freepik.com/vetores-gratis/fundo-de-fachada-plana-hotel_23-2148157379.jpg?w=2000',
+      }
+    })
+
+    await prisma.hotel.create({
+      data: {
+        name: 'caribe', 
+        image: 'https://www.momondo.com.br/himg/07/5d/30/expediav2-44173-1848004226-710507.jpg',
+      }
+    })
+
+    hotels = await prisma.hotel.findMany()
+  }
+
+  console.log({ hotels });
+
+  for(let i = 0; i < hotels.length; i++){
+    rooms = await prisma.room.findMany({
+      where:{
+        hotelId: hotels[i].id,
+      }
+    })
+
+    if(rooms.length < 3) {
+      await prisma.room.deleteMany({
+        where:{
+          hotelId: hotels[i].id,
+        }
+      })
+
+      await prisma.room.create({
+        data: {
+          name: '101', 
+          capacity: 1, 
+          hotelId: hotels[i].id,
+        }
+      })
+
+      await prisma.room.create({
+        data: {
+          name: '102', 
+          capacity: 2, 
+          hotelId: hotels[i].id,
+        }
+      })
+    
+      await prisma.room.create({
+        data: {
+          name: '103', 
+          capacity: 3, 
+          hotelId: hotels[i].id,
+        }
+      })
+
+    }
+  }
+
+  rooms = await prisma.room.findMany();
+
+  console.log({ rooms });
+}
 
 main()
   .catch((e) => {
