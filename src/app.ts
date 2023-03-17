@@ -11,6 +11,7 @@ import { handleApplicationErrors } from "@/middlewares";
 import {
   authenticationRouter,
   bookingRouter,
+  dateRouter,
   enrollmentsRouter,
   eventsRouter,
   hotelsRouter,
@@ -32,6 +33,7 @@ app
   .use("/payments", paymentsRouter)
   .use("/hotels", hotelsRouter)
   .use("/booking", bookingRouter)
+  .use("/date", dateRouter)
   .use(handleApplicationErrors);
 
 export async function init(): Promise<Express> {
