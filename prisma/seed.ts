@@ -5,7 +5,9 @@ const prisma = new PrismaClient();
 async function main() {
   let event = await prisma.event.findFirst();
   let tickets = await prisma.ticketType.findMany();
-  let hotels = await prisma.hotel.findMany()
+  let hotels = await prisma.hotel.findMany();
+  let rooms = await prisma.room.findMany();
+  let days = await prisma.day.findMany();
   
 
  if(hotels.length < 2) {
@@ -195,6 +197,31 @@ let rooms = await prisma.room.findMany();
  rooms = await prisma.room.findMany();
 
   console.log({ rooms });
+
+  if(days.length < 3){
+
+    await prisma.day.create({
+      data: {
+        day:'2023-10-22T01:00:00.067Z'
+      }
+    })
+    
+    await prisma.day.create({
+      data: {
+        day:'2023-10-23T01:00:00.067Z'
+      }
+    })
+
+    await prisma.day.create({
+      data: {
+        day:'2023-10-24T01:00:00.067Z'
+      }
+    })
+
+    days = await prisma.day.findMany();
+
+    console.log({ days });
+  }
 }
 
 main()
