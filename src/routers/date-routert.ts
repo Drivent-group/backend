@@ -6,8 +6,7 @@ const dateRouter = Router();
 
 dateRouter
   .all("/*", authenticateToken)
-  .get("", getDate)
-  .post("", );
+  .get("", getDate);
 
 export { dateRouter };
 
