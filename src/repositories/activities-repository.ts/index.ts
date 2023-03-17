@@ -1,4 +1,4 @@
-import { prisma } from "@/config";
+import { prisma } from '@/config';
 
 async function findActivityById(activityId: number) {
   return prisma.activity.findFirst({
@@ -11,23 +11,14 @@ async function findActivityById(activityId: number) {
   });
 }
 
-async function findActivitiesForDay(dateId: number, ticketId: number) {
-  /* await prisma.seat.findMany({
-    where: {
-      ticketId,
-    },
-    include: {
-      activity: {
-        where: {
-          dateId: dateId,
-        },
-      }
-    }
-  });  */  
+async function findActivitiesByDayId(dayId: number) {
+  return prisma.activity.findMany({
+    where: { dayId },
+  });
 }
 const activitiesRepository = {
   findActivityById,
-  findActivitiesForDay
+  findActivitiesByDayId,
 };
 
 export default activitiesRepository;
