@@ -17,7 +17,7 @@ async function postSubscription(userId: number, activityId: number) {
   }
 
   const activity = await activitiesRepository.findActivityById(activityId);
-  const dateId = activity.dateId;
+  const dateId = activity.dayId;
 
   const userActivitiesByDayiD = await activitiesRepository.findActivitiesForDay(dateId, ticket.id);
 

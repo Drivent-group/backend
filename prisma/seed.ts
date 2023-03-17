@@ -74,11 +74,11 @@ async function main() {
     }
   }
 
-let rooms = await prisma.room.findMany();
+  rooms = await prisma.room.findMany();
 
   console.log({ rooms });
 
-    if (!event) {
+  if (!event) {
     event = await prisma.event.create({
       data: {
         title: "Driven.t",
