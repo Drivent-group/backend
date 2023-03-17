@@ -6,6 +6,7 @@ async function main() {
   let event = await prisma.event.findFirst();
   let tickets = await prisma.ticketType.findMany();
   let hotels = await prisma.hotel.findMany()
+  
 
  if(hotels.length < 2) {
     await prisma.room.deleteMany({})
@@ -31,7 +32,7 @@ async function main() {
   console.log({ hotels });
 
   for(let i = 0; i < hotels.length; i++){
-    const rooms = await prisma.room.findMany({
+    let rooms = await prisma.room.findMany({
       where:{
         hotelId: hotels[i].id,
       }
@@ -71,7 +72,7 @@ async function main() {
     }
   }
 
- const rooms = await prisma.room.findMany();
+let rooms = await prisma.room.findMany();
 
   console.log({ rooms });
 
@@ -191,7 +192,7 @@ async function main() {
     }
   }
 
-  rooms = await prisma.room.findMany();
+ rooms = await prisma.room.findMany();
 
   console.log({ rooms });
 }
