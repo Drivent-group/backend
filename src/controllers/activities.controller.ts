@@ -11,7 +11,7 @@ export async function postSubscriptionController(req: AuthenticatedRequest, res:
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
   try {
-    const resultFromPost = await activitiesService.postSubscription(userId, Number(activityId));
+    const resultFromPost = await activitiesService.postSubscription(Number(userId), Number(activityId));
 
     return res.status(httpStatus.CREATED).send({
       resultFromPost,
@@ -38,6 +38,25 @@ export async function getActivitiesController(req: AuthenticatedRequest, res: Re
 
     return res.status(httpStatus.OK).send({
       result,
+    });
+  } catch (error) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+}
+
+export async function getSeatsAvailableController(req: AuthenticatedRequest, res: Response) {
+  const { activityId, dayId } = req.body;
+
+  if (!activityId) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+
+  try {
+    const availableSeats = await activitiesService.getCountOfSeats(Number(activityId ), Number(dayId));
+    console.log(availableSeats);
+
+    return res.status(httpStatus.OK).send({
+      availableSeats,
     });
   } catch (error) {
     return res.sendStatus(httpStatus.BAD_REQUEST);

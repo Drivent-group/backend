@@ -57,9 +57,28 @@ async function getActivities(dayId: number) {
   return activities;
 }
 
+async function getCountOfSeats(activityId: number, dayId: number) {
+  const seats = await activitiesRepository.countSeats(activityId);
+  
+  const seatOfTheDay = seats.filter(seat => seat.Activity.dayId === dayId);
+  console.log(seatOfTheDay);
+
+  const activity = await activitiesRepository.findActivityById(activityId);
+  
+  if(!activity) {
+    throw notFoundError();
+  }
+
+  const seatsWithTicket =  seatOfTheDay.length;
+  const availableSeats = activity.Venue.capacity - seatsWithTicket;
+
+  return availableSeats;
+}
+
 const activitiesService = {
   postSubscription,
   getActivities,
+  getCountOfSeats
 };
 
 export default activitiesService;
