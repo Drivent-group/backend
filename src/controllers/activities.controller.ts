@@ -11,12 +11,21 @@ export async function postSubscriptionController(req: AuthenticatedRequest, res:
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
   try {
-    const result = await activitiesService.postSubscription(userId, Number(activityId));
+    const resultFromPost = await activitiesService.postSubscription(userId, Number(activityId));
 
-    return res.status(httpStatus.OK).send({
-      result,
+    return res.status(httpStatus.CREATED).send({
+      resultFromPost,
     });
   } catch (error) {
+    if (error.name ==='ConflictError') {
+      return res.status(403).send(error.message);
+    }
+    if (error.name ==='NotFoundError') {
+      return res.status(404).send('activity not found');
+    }
+    if (error.name ==='UnauthorizedError') {
+      return res.status(403).send('No seats avalable for the activity');
+    }
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }

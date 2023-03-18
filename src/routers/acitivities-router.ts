@@ -6,8 +6,8 @@ const activitiesRouter = Router();
 
 activitiesRouter
   .all('/*', authenticateToken)
-  .get('/', postSubscriptionController)
+  .get('/')
   .get('/day/:dayId', getActivitiesController)
-  .post('/subscription');
+  .post('/subscription', postSubscriptionController);
 
 export { activitiesRouter };
