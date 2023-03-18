@@ -8,6 +8,8 @@ async function main() {
   let hotels = await prisma.hotel.findMany();
   let rooms = await prisma.room.findMany();
   let days = await prisma.day.findMany();
+  let venues = await prisma.venue.findMany();
+  let activities = await prisma.activity.findMany();
 
   if (hotels.length < 2) {
     await prisma.room.deleteMany({});
@@ -195,29 +197,110 @@ async function main() {
 
   console.log({ rooms });
 
-  if (days.length < 3) {
+  if (activities.length < venues.length * days.length || activities.length === 0) {
+    await prisma.activity.deleteMany({});
+    await prisma.day.deleteMany({});
+    await prisma.venue.deleteMany({});
+
+    
     await prisma.day.create({
       data: {
-        day: '2023-10-22T01:00:00.067Z',
+        day: dayjs().toDate(),
       },
     });
 
     await prisma.day.create({
       data: {
-        day: '2023-10-23T01:00:00.067Z',
+        day: dayjs().add(1, 'days').toDate(),
       },
     });
 
     await prisma.day.create({
       data: {
-        day: '2023-10-24T01:00:00.067Z',
-      },
-    });
+        day: dayjs().add(2, 'days').toDate(),
+      }
+    }),
+    
 
     days = await prisma.day.findMany();
 
     console.log({ days });
+    
+
+    await prisma.venue.create({
+      data: {
+        name: 'Auditório 1',
+        capacity: 40,
+      },
+    });
+
+    await prisma.venue.create({
+      data: {
+        name: 'Auditório 2',
+        capacity: 60,
+      },
+    });
+
+    await prisma.venue.create({
+      data: {
+        name: 'Palco principal',
+        capacity: 150,
+      },
+    });
+
+    
+    venues = await prisma.venue.findMany();
+
+    console.log({ venues });
+    
+    for (let i = 0; i < days.length; i++) {
+      let date = days[i].day.toISOString().slice(0,10);
+      console.log(date);
+      for (let j = 0; j < venues.length; j++) {
+       
+        if (j === 0) {
+          await prisma.activity.create({
+            data: {
+              name: 'Palestra 1',
+              dayId: days[i].id,
+              startTime: `${date}T09:00:00.000Z`,
+              endTime: `${date}T10:00:00.000Z`,
+              venueId: venues[j].id,
+            },
+          });
+        }
+
+        if (j % 2 !== 0) {
+          await prisma.activity.create({
+            data: {
+              name: 'Palestra 2',
+              dayId: days[i].id,
+              startTime: `${date}T09:00:00.000Z`,
+              endTime: `${date}T10:30:00.000Z`,
+              venueId: venues[j].id,
+            },
+          });
+        }
+        
+        if (j % 2 === 0 && j !== 0) {
+          await prisma.activity.create({
+            data: {
+              name: 'Palestra 3',
+              dayId: days[i].id,
+              startTime: `${date}T09:00:00.000Z`,
+              endTime: `${date}T11:00:00.000Z`,
+              venueId: venues[j].id,
+            },
+          });
+        } 
+      }
+    }
+
+    activities = await prisma.activity.findMany();
+
+    console.log( activities, activities.length );
   }
+  
 }
 
 main()
