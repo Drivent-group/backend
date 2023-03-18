@@ -44,12 +44,17 @@ async function createSeat(ticketId: number, activityId: number) {
 }
 
 async function countSeats(activityId: number) {
-  return await prisma.seat.groupBy({
-    by: ['id'],
+  return await prisma.seat.findMany({
     where: {
       activityId,
     },
-    _count: true
+    include: {
+      Activity: {
+        select: {
+          dayId: true
+        }
+      }
+    }    
   });
 }
 
