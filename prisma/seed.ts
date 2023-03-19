@@ -202,7 +202,6 @@ async function main() {
     await prisma.day.deleteMany({});
     await prisma.venue.deleteMany({});
 
-    
     await prisma.day.create({
       data: {
         day: dayjs().toDate(),
@@ -218,14 +217,11 @@ async function main() {
     await prisma.day.create({
       data: {
         day: dayjs().add(2, 'days').toDate(),
-      }
+      },
     }),
-    
-
-    days = await prisma.day.findMany();
+      (days = await prisma.day.findMany());
 
     console.log({ days });
-    
 
     await prisma.venue.create({
       data: {
@@ -248,17 +244,24 @@ async function main() {
       },
     });
 
-    
     venues = await prisma.venue.findMany();
 
     console.log({ venues });
-    
+
     for (let i = 0; i < days.length; i++) {
-      let date = days[i].day.toISOString().slice(0,10);
+      let date = days[i].day.toISOString().slice(0, 10);
       console.log(date);
       for (let j = 0; j < venues.length; j++) {
-       
         if (j === 0) {
+          await prisma.activity.create({
+            data: {
+              name: 'Workshop',
+              dayId: days[i].id,
+              startTime: `${date}T10:00:00.000Z`,
+              endTime: `${date}T11:00:00.000Z`,
+              venueId: venues[j].id,
+            },
+          });
           await prisma.activity.create({
             data: {
               name: 'Palestra 1',
@@ -276,12 +279,11 @@ async function main() {
               name: 'Palestra 2',
               dayId: days[i].id,
               startTime: `${date}T09:00:00.000Z`,
-              endTime: `${date}T10:30:00.000Z`,
+              endTime: `${date}T10:00:00.000Z`,
               venueId: venues[j].id,
             },
           });
         }
-        
         if (j % 2 === 0 && j !== 0) {
           await prisma.activity.create({
             data: {
@@ -292,15 +294,14 @@ async function main() {
               venueId: venues[j].id,
             },
           });
-        } 
+        }
       }
     }
 
     activities = await prisma.activity.findMany();
 
-    console.log( activities, activities.length );
+    console.log(activities, activities.length);
   }
-  
 }
 
 main()
