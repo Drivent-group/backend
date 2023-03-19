@@ -11,7 +11,6 @@ async function postSubscription(userId: number, activityId: number) {
   }
 
   const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
-
   if (!ticket || ticket.status === 'RESERVED' || ticket.TicketType.isRemote) {
     throw requestError(403, ' ticket with irregular status');
   }
@@ -26,12 +25,10 @@ async function postSubscription(userId: number, activityId: number) {
   const end = activity.endTime.getTime();
 
   const userActivitiesByDayiD = await activitiesRepository.findActivitiesForDay(ticket.id);
-
   userActivitiesByDayiD.forEach((seat) => {
     const startTime = seat.Activity.startTime.getTime();
     const endTime = seat.Activity.endTime.getTime();
-
-    if (startTime >= beginning && startTime <= end || endTime >= beginning && endTime <= end) {
+    if (startTime >= beginning && startTime < end || endTime > beginning && endTime <=end || startTime ===beginning && endTime ===end) {
       throw conflictError('activity time conflict');
     }
   });
@@ -61,7 +58,6 @@ async function getCountOfSeats(activityId: number, dayId: number) {
   const seats = await activitiesRepository.countSeats(activityId);
   
   const seatOfTheDay = seats.filter(seat => seat.Activity.dayId === dayId);
-  console.log(seatOfTheDay);
 
   const activity = await activitiesRepository.findActivityById(activityId);
   
@@ -75,10 +71,32 @@ async function getCountOfSeats(activityId: number, dayId: number) {
   return availableSeats;
 }
 
+async function getSeatsByTicket(userId: number) {
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+
+  if (!enrollment) {
+    throw notFoundError();
+  }
+
+  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
+  if (!ticket || ticket.status === 'RESERVED' || ticket.TicketType.isRemote) {
+    throw requestError(403, ' ticket with irregular status');
+  }
+
+  const activities = await activitiesRepository.findActivitiesByTicket(ticket.id);
+
+  if(!activities) {
+    throw notFoundError();
+  }
+
+  return activities;
+}
+
 const activitiesService = {
   postSubscription,
   getActivities,
-  getCountOfSeats
+  getCountOfSeats,
+  getSeatsByTicket
 };
 
 export default activitiesService;

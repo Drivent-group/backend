@@ -59,12 +59,21 @@ async function countSeats(activityId: number) {
   });
 }
 
+async function  findActivitiesByTicket(ticketId: number) {
+  return await prisma.seat.findMany({
+    where: {
+      ticketId,
+    },
+  });
+}
+
 const activitiesRepository = {
   findActivityById,
   findActivitiesByDayIdWithVenue,
   findActivitiesForDay,
   createSeat,
   countSeats,
+  findActivitiesByTicket
 };
 
 export default activitiesRepository;
