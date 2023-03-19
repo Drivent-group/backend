@@ -1,4 +1,4 @@
-import { getActivitiesController, postSubscriptionController } from '@/controllers/activities.controller';
+import { getActivitiesController, getSeatsAvailableController, postSubscriptionController } from '@/controllers/activities.controller';
 import { authenticateToken } from '@/middlewares';
 import { Router } from 'express';
 
@@ -6,8 +6,8 @@ const activitiesRouter = Router();
 
 activitiesRouter
   .all('/*', authenticateToken)
-  .get('/', postSubscriptionController)
+  .get('/seats', getSeatsAvailableController)
   .get('/day/:dayId', getActivitiesController)
-  .post('/subscription');
+  .post('/subscription', postSubscriptionController);
 
 export { activitiesRouter };

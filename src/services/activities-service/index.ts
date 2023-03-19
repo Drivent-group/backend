@@ -17,17 +17,21 @@ async function postSubscription(userId: number, activityId: number) {
   }
 
   const activity = await activitiesRepository.findActivityById(activityId);
-  if (!activity) {
+
+  if(!activity) {
     throw notFoundError();
   }
 
-  const userActivitiesByDayId = await activitiesRepository.findActivitiesByDayIdWithVenue(ticket.id);
+  const beginning = activity.startTime.getTime();
+  const end = activity.endTime.getTime();
 
-  userActivitiesByDayId.forEach((seat) => {
+  const userActivitiesByDayiD = await activitiesRepository.findActivitiesForDay(ticket.id);
+
+  userActivitiesByDayiD.forEach((seat) => {
     const startTime = seat.Activity.startTime.getTime();
     const endTime = seat.Activity.endTime.getTime();
 
-    if ((startTime >= beginning && startTime <= end) || (endTime >= beginning && endTime <= end)) {
+    if (startTime >= beginning && startTime <= end || endTime >= beginning && endTime <= end) {
       throw conflictError('activity time conflict');
     }
   });
@@ -53,9 +57,28 @@ async function getActivities(dayId: number) {
   return activities;
 }
 
+async function getCountOfSeats(activityId: number, dayId: number) {
+  const seats = await activitiesRepository.countSeats(activityId);
+  
+  const seatOfTheDay = seats.filter(seat => seat.Activity.dayId === dayId);
+  console.log(seatOfTheDay);
+
+  const activity = await activitiesRepository.findActivityById(activityId);
+  
+  if(!activity) {
+    throw notFoundError();
+  }
+
+  const seatsWithTicket =  seatOfTheDay.length;
+  const availableSeats = activity.Venue.capacity - seatsWithTicket;
+
+  return availableSeats;
+}
+
 const activitiesService = {
   postSubscription,
   getActivities,
+  getCountOfSeats
 };
 
 export default activitiesService;
