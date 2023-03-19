@@ -36,9 +36,7 @@ export async function getActivitiesController(req: AuthenticatedRequest, res: Re
   try {
     const result = await activitiesService.getActivities(Number(dayId));
 
-    return res.status(httpStatus.OK).send({
-      result,
-    });
+    return res.status(httpStatus.OK).send(result);
   } catch (error) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }

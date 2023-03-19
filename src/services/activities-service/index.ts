@@ -17,6 +17,7 @@ async function postSubscription(userId: number, activityId: number) {
   }
 
   const activity = await activitiesRepository.findActivityById(activityId);
+
   if(!activity) {
     throw notFoundError();
   }
@@ -47,8 +48,7 @@ async function postSubscription(userId: number, activityId: number) {
 }
 
 async function getActivities(dayId: number) {
-  console.log('🚀 ~ file: index.ts:28 ~ getActivities ~ dayId:', dayId);
-  const activities = await activitiesRepository.findActivitiesByDayId(dayId);
+  const activities = await activitiesRepository.findActivitiesByDayIdWithVenue(dayId);
 
   if (activities.length === 0) {
     throw notFoundError();

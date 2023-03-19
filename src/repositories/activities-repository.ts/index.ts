@@ -3,11 +3,11 @@ import { prisma } from '@/config';
 async function findActivityById(activityId: number) {
   return prisma.activity.findFirst({
     where: {
-      id: activityId
+      id: activityId,
     },
     include: {
-      Venue: true
-    }
+      Venue: true,
+    },
   });
 }
 
@@ -21,16 +21,17 @@ async function findActivitiesForDay(ticketId: number) {
         select: {
           startTime: true,
           endTime: true,
-          dayId: true
-        }
-      }
-    }
+          dayId: true,
+        },
+      },
+    },
   });
-}   
+}
 
-async function findActivitiesByDayId(dayId: number) {
+async function findActivitiesByDayIdWithVenue(dayId: number) {
   return prisma.activity.findMany({
     where: { dayId },
+    include: { Venue: { select: { name: true, capacity: true } }, _count: { select: { Seat: true } } },
   });
 }
 
@@ -38,8 +39,8 @@ async function createSeat(ticketId: number, activityId: number) {
   return await prisma.seat.create({
     data: {
       ticketId,
-      activityId
-    }
+      activityId,
+    },
   });
 }
 
@@ -60,10 +61,10 @@ async function countSeats(activityId: number) {
 
 const activitiesRepository = {
   findActivityById,
-  findActivitiesByDayId,
+  findActivitiesByDayIdWithVenue,
   findActivitiesForDay,
-  createSeat, 
-  countSeats
+  createSeat,
+  countSeats,
 };
 
 export default activitiesRepository;
