@@ -169,6 +169,8 @@ model Activity {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Seat      Seat[]
+
+  @@index([dayId, startTime(sort: Asc)]) 
 }
 
 model Seat {
