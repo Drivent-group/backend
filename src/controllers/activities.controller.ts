@@ -6,7 +6,6 @@ import httpStatus from 'http-status';
 export async function postSubscriptionController(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
   const { activityId } = req.body;
-
   if (!activityId) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
@@ -18,7 +17,7 @@ export async function postSubscriptionController(req: AuthenticatedRequest, res:
     });
   } catch (error) {
     if (error.name ==='ConflictError') {
-      return res.status(403).send(error.message);
+      return res.status(400).send(error.message);
     }
     if (error.name ==='NotFoundError') {
       return res.status(404).send('activity not found');
@@ -51,10 +50,22 @@ export async function getSeatsAvailableController(req: AuthenticatedRequest, res
 
   try {
     const availableSeats = await activitiesService.getCountOfSeats(Number(activityId ), Number(dayId));
-    console.log(availableSeats);
 
     return res.status(httpStatus.OK).send({
       availableSeats,
+    });
+  } catch (error) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+}
+
+export async function getActivitiesByTicketController(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  try {
+    const seats = await activitiesService.getSeatsByTicket((Number(userId)));
+
+    return res.status(httpStatus.OK).send({
+      seats,
     });
   } catch (error) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
